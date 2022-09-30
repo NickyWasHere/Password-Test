@@ -3,7 +3,7 @@ package check;
 public class Password {
 
 	//Quantidade mínima de cada item
-	public static int minCaracteres=8, minMaiusMinus=1, minNumeros=2, minSimbolos=1;
+	public static int minCaracteres=8, minMaiusMinus=1, minNumeros=2, minSimbolos=1, maxSequence=3;
 	
 	private String password;
 	private int caracteres;
@@ -71,7 +71,7 @@ public class Password {
 	}
 	
 	public boolean testPassword() {
-		String req1, req2, req3, req4;
+		String req1, req2, req3, req4, req5;
 		
 		//Quant de caracteres
 		if (caracteres<minCaracteres) {
@@ -101,23 +101,49 @@ public class Password {
 			req4 = "\u001B[32m"; //Verde
 		}
 		
-		System.out.println(toString(req1, req2, req3, req4));
+		if (checkSequence()==false) {
+			req5 = "\u001B[31m"; //Vermelho
+		} else {
+			req5 = "\u001B[32m"; //Verde
+		}
 		
-		if (req1=="\u001B[32m" && req1==req2 && req1==req3 && req1==req4) {
+		System.out.println(toString(req1, req2, req3, req4, req5));
+		
+		if (req1=="\u001B[32m" && req1==req2 && req1==req3 && req1==req4 && req1==req5) {
 			return true;
 		} else {
 			return false;
 		}
 	}
+	
+	private boolean checkSequence() {
+		for (int i=2; i<password.length(); i++) {
+			int atual = password.charAt(i);
+			int anterior = password.charAt(i-1);
+			int anterior2 = password.charAt(i-2);
+			
+			//3 caracteres iguais seguidos
+			if ((atual==anterior && atual==anterior2)) { 
+				return false;
+				
+			  //3 caracteres em sequência
+			} else if (anterior2+1==anterior && anterior+1==atual) { 
+				return false;
+				
+			}
+		}
+		return true;
+	}
 
-	public String toString(String req1, String req2, String req3, String req4) {
+	public String toString(String req1, String req2, String req3, String req4, String req5) {
 		String ANSI_RESET = "\u001B[0m";
 		
 		return "Requisitos mínimos: \n"
 				+ req1 + minCaracteres + " caracteres;\n" + ANSI_RESET
 				+ req2 + minMaiusMinus + " letras maiúsculas e minúsculas;\n" + ANSI_RESET
 				+ req3 + minNumeros + " números;\n" + ANSI_RESET
-				+ req4 + minSimbolos + " símbolos.\n" + ANSI_RESET;
+				+ req4 + minSimbolos + " símbolos;\n" + ANSI_RESET
+				+ req5 + "repetição/sequência de no máximo " + maxSequence + " caracteres;\n" + ANSI_RESET;
 	}
 
 }
