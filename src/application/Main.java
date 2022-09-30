@@ -2,46 +2,41 @@ package application;
 
 import java.util.Scanner;
 
-public class Main {
+import check.Password;
 
+public class Main {
+	
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
+		boolean flag=false;
 		
-		System.out.println("Digite uma senha:");
-		String password = sc.next();
-		
-		int quantCaracteres = password.length();
-		int minMaiusculo = minimo(password, 65, 90);
-		int minMinusculo = minimo(password, 97, 122);
-		int minNumeros = minimo(password, 48, 57);
-		int minSimbolos = minimoSimbolos(password);
+		do {
+			System.out.print("Digite uma senha: ");
+			Password password = new Password(sc.next());
+			
+			System.out.println();
+			boolean pass = password.testPassword();
+			
+			if (pass) {
+				System.out.println("Senha aceita");
+			} else {
+				System.out.println("Senha não aceita");
+			}
+			
+			System.out.println();
+			System.out.print("Deseja tentar novamente? (s/n) ");
+			char repeat = sc.next().charAt(0);
+			
+			if (repeat=='s' || repeat=='S') {
+				flag=true;
+			} else if (repeat=='n' || repeat=='N') {
+				flag=false;
+			}
+				
+		} while(flag);
 		
 		sc.close();
 
 	}
-	
-	public static int minimo(String password, int begin, int end) {
-		int cont=0;
-		
-		for (int i=0; i<password.length(); i++) {
-			if (password.charAt(i)>=begin && password.charAt(i)<=end) {
-				cont++;
-			}
-		}
-		
-		return cont;
-	}
 
-	public static int minimoSimbolos(String password) {
-		int cont=0;
-		
-		for (int i=0; i<password.length(); i++) {
-			int c = password.charAt(i);
-			if ((c>=33 && c<=47) || (c>=58 && c<=64) || (c>=91 && c<=96) || (c>=123 && c<=126)) {
-				cont++;
-			}
-		}
-		
-		return cont;
-	}
 }
